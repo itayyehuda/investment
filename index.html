@@ -387,10 +387,11 @@ const COLORS = [
 const DEFAULT_PARAMS = {
   initial: 100000,
   annualReturn: 7,
-  monthlyWithdrawal: 500,
+  monthlyWithdrawal: 0,
   annualFee: 1,
   capitalGainTax: 25,
   annualInflation: 2.5,
+  monthlyDeposit: 0,
 };
 
 /* ──────────────────────────────────────────────────────────
@@ -409,6 +410,7 @@ function simulate(inv, totalYears) {
   const cgt = inv.capitalGainTax / 100;
   const inf = Math.pow(1 + inv.annualInflation / 100, 1.0 / 12) - 1;
 
+  let dep = inv.monthlyDeposit;
   let P = inv.initial;
   let G = 0;
 
@@ -428,6 +430,9 @@ function simulate(inv, totalYears) {
     diff = inf * P
     P += diff
     G -= diff
+
+    P += dep;
+    dep += inf * dep;
 
     // 2. Management fee (proportional)
     const fMult = 1 - f;
@@ -663,6 +668,7 @@ function renderCard(inv) {
       ${field('MGMT FEE / YR', 'annualFee', inv.annualFee, '%')}
       ${field('CAPITAL GAIN TAX', 'capitalGainTax', inv.capitalGainTax, '%')}
       ${field('INFLATION / YR', 'annualInflation', inv.annualInflation, '%')}
+      ${field('MONTHLY DEPOSIT', 'monthlyDeposit', inv.monthlyDeposit, '$')}
     </div>
     <div class="card-footer">
       <span class="net-label">NET VALUE @ YR ${years}</span>
