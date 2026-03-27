@@ -425,10 +425,18 @@ function simulate(inv, totalYears) {
     // 1. Growth
     G += (P + G) * r;
 
+    diff = inf * P
+    P += diff
+    G -= diff
+
     // 2. Management fee (proportional)
     const fMult = 1 - f;
-    P *= fMult;
-    G *= fMult;
+    sub = f * (P + G)
+    G -= sub
+    if (G < 0) {
+      P += G
+      G = 0
+    }
 
     // 3. Inflation-adjusted withdrawal (net, i.e. what the investor receives)
     const W_net = inv.monthlyWithdrawal * Math.pow(1 + inf, m - 1); // month 1 = no inflation adjustment yet
